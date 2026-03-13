@@ -1,11 +1,11 @@
 const gameArea = document.getElementById("gameArea");
 
-// Reset the game area
+// Reset game area when switching games
 function showSection(id){
   document.querySelectorAll(".disease").forEach(s=>s.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
   gameArea.innerHTML = "";
-  document.onkeydown = null; // Reset key listeners
+  document.onkeydown = null; // Reset keyboard listeners
 }
 
 // Win/Loss Overlay
@@ -50,6 +50,13 @@ function startMemoryCity(){
     tile.style.alignItems="center";
     tile.style.justifyContent="center";
     tile.dataset.id=i;
+    tile.style.margin="5px";
+    tile.style.width="80px";
+    tile.style.height="80px";
+    tile.style.border="1px solid #aaa";
+    tile.style.borderRadius="10px";
+    tile.style.cursor="pointer";
+
     tile.onclick = () => {
       user.push(i);
       if(i !== sequence[user.length-1]){
@@ -83,6 +90,7 @@ function startStoryAdventure(){
       const b = document.createElement("button");
       b.innerText=opt;
       b.style.margin="5px";
+      b.style.fontSize="20px";
       b.onclick = ()=>{
         showEndScreen(opt.includes("Market")?"win":"lose",opt.includes("Market")?"Correct!":"Remember the story carefully!");
       };
@@ -91,17 +99,60 @@ function startStoryAdventure(){
   },4000);
 }
 
-// 3. Tool Time
+// 3. Tool Time (Fixed Matching Game)
 function startToolTime(){
-  gameArea.innerHTML="<h3>Tool Time 🔧</h3><p>Click the object to match its place!</p>";
-  const items = {"🪥 Toothbrush":"🛁 Bathroom", "🔨 Hammer":"🧰 Toolbox", "🗝️ Key":"🚪 Door"};
-  Object.entries(items).forEach(([obj,place])=>{
+  gameArea.innerHTML="<h3>Tool Time 🔧</h3><p>Click an object, then click its correct place!</p>";
+  
+  const objects = ["🪥 Toothbrush", "🔨 Hammer", "🗝️ Key"];
+  const places = ["🛁 Bathroom", "🧰 Toolbox", "🚪 Door"];
+  const correctMatches = {
+    "🪥 Toothbrush": "🛁 Bathroom",
+    "🔨 Hammer": "🧰 Toolbox",
+    "🗝️ Key": "🚪 Door"
+  };
+
+  let selectedObject = null;
+
+  const objDiv = document.createElement("div");
+  objDiv.style.display="flex";
+  objDiv.style.justifyContent="space-around";
+  objDiv.style.marginBottom="20px";
+
+  const placeDiv = document.createElement("div");
+  placeDiv.style.display="flex";
+  placeDiv.style.justifyContent="space-around";
+
+  objects.forEach(obj=>{
     const b = document.createElement("button");
-    b.innerText=`${obj} → ${place}`;
-    b.style.margin="5px";
-    b.onclick = ()=>showEndScreen("win","Well done!");
-    gameArea.appendChild(b);
+    b.innerText=obj; 
+    b.style.fontSize="30px";
+    b.onclick=()=>{
+      selectedObject=obj; 
+      objDiv.querySelectorAll("button").forEach(btn=>btn.style.border=""); // reset highlights
+      b.style.border="2px solid blue"; // highlight selected
+    };
+    objDiv.appendChild(b);
   });
+
+  places.forEach(place=>{
+    const b = document.createElement("button");
+    b.innerText=place;
+    b.style.fontSize="30px";
+    b.onclick=()=>{
+      if(!selectedObject) return showEndScreen("lose","Select an object first!");
+      if(correctMatches[selectedObject]===place){
+        showEndScreen("win",`${selectedObject} correctly matched to ${place}!`);
+      } else {
+        showEndScreen("lose",`${selectedObject} does not go to ${place}!`);
+      }
+      selectedObject=null;
+      objDiv.querySelectorAll("button").forEach(btn=>btn.style.border=""); 
+    };
+    placeDiv.appendChild(b);
+  });
+
+  gameArea.appendChild(objDiv);
+  gameArea.appendChild(placeDiv);
 }
 
 /* ----------------- PARKINSON'S ----------------- */
@@ -133,7 +184,7 @@ function startArrowDance(){
 
 // 2. Lab Precision
 function startLabPrecision(){
-  gameArea.innerHTML="<h3>Lab Precision 🧪</h3><p>Keep the tube in the gray path! Hover the mouse over the path to win.</p>";
+  gameArea.innerHTML="<h3>Lab Precision 🧪</h3><p>Keep the tube in the gray path! Hover over the path to win.</p>";
   const path = document.createElement("div");
   path.style.height="50px"; path.style.background="#ddd"; path.style.marginTop="20px"; path.style.position="relative";
   path.style.borderRadius="10px";
@@ -142,7 +193,7 @@ function startLabPrecision(){
   path.appendChild(tube);
   gameArea.appendChild(path);
 
-  let x=0; let running = true;
+  let x=0, running = true;
   function move(){
     if(!running) return;
     x+=2; if(x>230) x=0;
@@ -159,7 +210,7 @@ function startLabPrecision(){
 // 3. Music March
 function startMusicMarch(){
   gameArea.innerHTML="<h3>Music March 🎶</h3><p>Press SPACE on beat!</p>";
-  const beatDiv=document.createElement("div");
+  const beatDiv = document.createElement("div");
   beatDiv.innerText="🎵"; beatDiv.style.fontSize="60px"; beatDiv.style.textAlign="center"; beatDiv.style.marginTop="20px";
   gameArea.appendChild(beatDiv);
 
