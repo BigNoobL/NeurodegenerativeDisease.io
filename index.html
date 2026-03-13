@@ -1,125 +1,73 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NeuroHealth Learning</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <header>
 <h1>NeuroHealth Learning</h1>
-
 <nav>
 <button onclick="showSection('alz')">Alzheimer's</button>
 <button onclick="showSection('park')">Parkinson's</button>
 <button onclick="showSection('hunt')">Huntington's</button>
 </nav>
-
 </header>
 
 <main>
 
+<!-- Alzheimer Section -->
 <section id="alz" class="disease">
-
 <h2>Alzheimer's Disease</h2>
-
 <div class="curriculum">
-
 <h3>Curriculum</h3>
-
-<p>
-Alzheimer's disease slowly affects memory and thinking.
-Brain cells become damaged over time, which makes it
-harder to remember recent events, conversations,
-and names.
-</p>
-
-<p>
-Mental activity and memory exercises can help
-keep the brain active and support cognitive health.
-</p>
-
+<p>Alzheimer's gradually damages memory and thinking. Brain cells die over time, making it hard to remember recent events, names, and conversations. Mental exercises help keep your brain active.</p>
 </div>
-
 <div class="games">
-
 <h3>Brain Games</h3>
-
-<button onclick="startMemoryPath()">Memory Path</button>
-<button onclick="startStoryRecall()">Story Recall</button>
-<button onclick="startObjectMatch()">Object Match</button>
-
+<button onclick="startMemoryPath()">Memory City</button>
+<button onclick="startStoryRecall()">Daily Life Adventure</button>
+<button onclick="startObjectMatch()">Tool Time</button>
 </div>
-
 </section>
 
-
+<!-- Parkinson Section -->
 <section id="park" class="disease hidden">
-
 <h2>Parkinson's Disease</h2>
-
 <div class="curriculum">
-
-<p>
-Parkinson's disease affects movement and coordination.
-It happens when certain brain cells that produce dopamine
-stop working properly.
-</p>
-
-<p>
-Exercises that train rhythm, coordination,
-and reaction time may help support movement control.
-</p>
-
+<h3>Curriculum</h3>
+<p>Parkinson's affects movement and coordination due to dopamine loss. Exercises that train rhythm, coordination, and reaction can support motor control.</p>
 </div>
-
 <div class="games">
-
-<button onclick="startReactionSteps()">Reaction Steps</button>
-<button onclick="startSteadyHands()">Steady Hands</button>
-<button onclick="startRhythm()">Rhythm Walk</button>
-
+<h3>Brain Games</h3>
+<button onclick="startReactionSteps()">Step in Rhythm</button>
+<button onclick="startSteadyHands()">Lab Precision</button>
+<button onclick="startRhythm()">Music March</button>
 </div>
-
 </section>
 
-
+<!-- Huntington Section -->
 <section id="hunt" class="disease hidden">
-
 <h2>Huntington's Disease</h2>
-
 <div class="curriculum">
-
-<p>
-Huntington's disease affects thinking, movement,
-and emotional control.
-</p>
-
-<p>
-Cognitive exercises that train focus, pattern
-recognition, and impulse control may support
-mental flexibility.
-</p>
-
+<h3>Curriculum</h3>
+<p>Huntington's affects thinking, movement, and emotional control. Cognitive exercises that train focus, patterns, and impulse control help mental flexibility.</p>
 </div>
-
 <div class="games">
-
-<button onclick="startSequence()">Sequence Focus</button>
-<button onclick="startImpulse()">Impulse Control</button>
-<button onclick="startPattern()">Pattern Tracking</button>
-
+<h3>Brain Games</h3>
+<button onclick="startSequence()">Number Train</button>
+<button onclick="startImpulse()">Red Light Green Light</button>
+<button onclick="startPattern()">Shape Safari</button>
 </div>
-
 </section>
 
+<!-- Game Area -->
 <div id="gameArea"></div>
 
 </main>
-
 <script src="script.js"></script>
-
 </body>
 </html>
