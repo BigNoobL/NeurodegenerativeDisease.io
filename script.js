@@ -1,143 +1,87 @@
-const gameArea = document.getElementById("gameArea");
+const gameArea=document.getElementById("gameArea");
 
-// Section Navigation
 function showSection(id){
-    document.querySelectorAll(".disease").forEach(s=>s.classList.add("hidden"));
-    document.getElementById(id).classList.remove("hidden");
-    gameArea.innerHTML=""; // clear game area when switching
+  document.querySelectorAll(".disease").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  gameArea.innerHTML=""; // Clear previous game
 }
 
-/* ----------------- ALZHEIMER'S GAMES ----------------- */
+// Utility function for graphical feedback
+function showFeedback(type){
+  const fb=document.createElement("div");
+  fb.className="feedback";
+  fb.innerHTML=type==="win"?"✔️":"❌";
+  gameArea.appendChild(fb);
+  setTimeout(()=>fb.remove(),1000);
+}
 
-// 1. Memory City
-function startMemoryPath(){
-    gameArea.innerHTML="<h3>Memory City</h3><p>Click the landmarks in order!</p>";
-    let seq = [], user = [];
-    for(let i=0;i<9;i++){
-        let d=document.createElement("div");
-        d.className="tile";
-        d.dataset.id=i;
-        d.onclick=()=>clickTile(i);
-        gameArea.appendChild(d);
-    }
-    for(let i=0;i<4;i++) seq.push(Math.floor(Math.random()*9));
-    seq.forEach((n,i)=>{
-        setTimeout(()=>{
-            document.querySelectorAll(".tile")[n].style.background="yellow";
-            setTimeout(()=>{document.querySelectorAll(".tile")[n].style.background="white";},400);
-        },i*700)
+/* ----------------- ALZHEIMER'S ----------------- */
+// Memory City
+function startMemoryCity(){
+  gameArea.innerHTML="<h3>Memory City</h3><p>Click landmarks in order!</p>";
+  const landmarks=["house","tree","shop","bench","fountain","statue","bus","car","lamp"];
+  let seq=[], user=[];
+  gameArea.style.display="flex";
+  gameArea.style.flexWrap="wrap";
+  for(let i=0;i<9;i++){
+    const tile=document.createElement("div");
+    tile.className="tile";
+    tile.style.backgroundImage=`url('assets/landmarks/${landmarks[i]}.png')`;
+    tile.dataset.id=i;
+    tile.onclick=()=>{ user.push(i); if(i!==seq[user.length-1]){ showFeedback("lose"); user=[]; } else{ if(user.length===seq.length){ showFeedback("win"); } } };
+    gameArea.appendChild(tile);
+  }
+  for(let i=0;i<4;i++) seq.push(Math.floor(Math.random()*9));
+  // show sequence animation
+  seq.forEach((n,i)=>setTimeout(()=>{const t=document.querySelectorAll(".tile")[n]; t.style.transform="scale(1.2)"; setTimeout(()=>t.style.transform="scale(1)",400); },i*700));
+}
+
+// Story Adventure
+function startStoryAdventure(){
+  gameArea.innerHTML="<h3>Daily Life Adventure</h3>";
+  const story="Anna went to the market to buy apples and bread.";
+  const p=document.createElement("p"); p.innerText=story;
+  gameArea.appendChild(p);
+  setTimeout(()=>{
+    p.innerText="Where did Anna go?";
+    ["Market","Home","Park"].forEach(c=>{
+      const b=document.createElement("button"); b.innerText=c;
+      b.onclick=()=>{ if(c==="Market") showFeedback("win"); else showFeedback("lose"); };
+      gameArea.appendChild(b);
     });
-    function clickTile(n){
-        user.push(n);
-        if(user[user.length-1]!=seq[user.length-1]){
-            alert("Incorrect — try again");
-            user=[];
-        }
-        if(user.length==seq.length) alert("Correct! Great memory!");
-    }
+  },4000);
 }
 
-// 2. Daily Life Adventure
-function startStoryRecall(){
-    gameArea.innerHTML="<h3>Daily Life Adventure</h3>";
-    const story = "Anna went to the market to buy apples and bread.";
-    const storyP = document.createElement("p"); storyP.innerText = story;
-    gameArea.appendChild(storyP);
-    setTimeout(()=>{
-        storyP.innerText="Where did Anna go?";
-        const choices = ["Market","Home","Park"];
-        choices.forEach(c=>{
-            const b = document.createElement("button");
-            b.innerText=c;
-            b.onclick=()=>{ if(c=="Market") alert("Correct!"); else alert("Try again."); };
-            gameArea.appendChild(b);
-        });
-    },4000);
+// Tool Time (drag-drop simplified)
+function startToolTime(){
+  gameArea.innerHTML="<h3>Tool Time</h3><p>Click the object and drag to the right location!</p>";
+  const items={Toothbrush:"Bathroom",Hammer:"Toolbox",Key:"Door"};
+  for(let obj in items){
+    const b=document.createElement("img");
+    b.src=`assets/tools/${obj}.png`;
+    b.width=80; b.height=80;
+    b.style.margin="10px";
+    b.onclick=()=>showFeedback("win");
+    gameArea.appendChild(b);
+  }
 }
 
-// 3. Tool Time
-function startObjectMatch(){
-    gameArea.innerHTML="<h3>Tool Time</h3><p>Drag the objects to correct locations.</p>";
-    const items = {Toothbrush:"Bathroom",Key:"Door",Hammer:"Toolbox"};
-    for(let obj in items){
-        const b = document.createElement("button");
-        b.innerText=obj+" → "+items[obj];
-        b.onclick=()=>alert("Correct!"); // simplified interaction
-        gameArea.appendChild(b);
-    }
-}
+/* ----------------- PARKINSON'S ----------------- */
+// Arrow Dance
+function startArrowDance(){ gameArea.innerHTML="<h3>Step in Rhythm</h3><p>Press matching arrow key!</p>"; const arrows=["⬅️","➡️","⬆️","⬇️"]; const arrowDiv=document.createElement("div"); arrowDiv.style.fontSize="60px"; gameArea.appendChild(arrowDiv); function next(){ arrowDiv.innerText=arrows[Math.floor(Math.random()*4)]; } document.onkeydown=e=>next(); next(); }
 
-/* ----------------- PARKINSON'S GAMES ----------------- */
+// Lab Precision
+function startLabPrecision(){ gameArea.innerHTML="<h3>Lab Precision</h3><p>Keep the tube in the path!</p>"; const path=document.createElement("div"); path.style.height="40px"; path.style.background="#ddd"; path.style.position="relative"; const dot=document.createElement("div"); dot.style.width="20px"; dot.style.height="20px"; dot.style.background="black"; dot.style.position="absolute"; dot.style.left="0px"; path.appendChild(dot); gameArea.appendChild(path); let x=0; function move(){ x+=2; if(x>350)x=0; dot.style.left=x+"px"; requestAnimationFrame(move); } move(); }
 
-// 1. Step in Rhythm
-function startReactionSteps(){
-    gameArea.innerHTML="<h3>Step in Rhythm</h3><p>Press arrow keys matching the moving arrows!</p>";
-    const arrowDiv=document.createElement("div"); arrowDiv.style.fontSize="60px";
-    gameArea.appendChild(arrowDiv);
-    const arrows=["⬅","➡","⬆","⬇"];
-    function next(){ arrowDiv.innerText=arrows[Math.floor(Math.random()*4)]; }
-    document.onkeydown=e=>next();
-    next();
-}
+// Music March
+function startMusicMarch(){ gameArea.innerHTML="<h3>Music March</h3><p>Press SPACE on beat!</p>"; let beat=0; setInterval(()=>beat=Date.now(),1000); document.onkeydown=e=>{ if(e.code==="Space"){ let diff=Math.abs(Date.now()-beat); if(diff<300)showFeedback("win"); else showFeedback("lose"); } }; }
 
-// 2. Lab Precision
-function startSteadyHands(){
-    gameArea.innerHTML="<h3>Lab Precision</h3><p>Keep the tube inside the path!</p>";
-    const path=document.createElement("div");
-    path.style.height="40px"; path.style.background="#ddd"; path.style.position="relative";
-    const dot=document.createElement("div");
-    dot.style.width="20px"; dot.style.height="20px"; dot.style.background="black"; dot.style.position="absolute"; dot.style.left="0px";
-    path.appendChild(dot); gameArea.appendChild(path);
-    let x=0;
-    function move(){
-        x+=2; if(x>350) x=0;
-        dot.style.left=x+"px";
-        requestAnimationFrame(move);
-    }
-    path.onmousemove=e=>{ if(e.offsetY>30) console.log("Stay steady!"); }
-    move();
-}
+/* ----------------- HUNTINGTON'S ----------------- */
+// Number Train
+function startNumberTrain(){ gameArea.innerHTML="<h3>Number Train</h3>"; const nums=[1,2,3,4,5].sort(()=>Math.random()-0.5); let expected=1; nums.forEach(n=>{ const b=document.createElement("button"); b.innerText=n; b.onclick=()=>{ if(n==expected){ expected++; if(expected>5)showFeedback("win"); }else showFeedback("lose"); }; gameArea.appendChild(b); }); }
 
-// 3. Music March
-function startRhythm(){
-    gameArea.innerHTML="<h3>Music March</h3><p>Press SPACE with the beat!</p>";
-    let beat=0;
-    setInterval(()=>{beat=Date.now();},1000);
-    document.onkeydown=e=>{ if(e.code==="Space"){ let diff=Math.abs(Date.now()-beat); alert("Timing difference: "+diff+" ms"); } };
-}
+// Red Light Green Light
+function startRedLightGreenLight(){ gameArea.innerHTML="<h3>Red Light Green Light</h3>"; const char=document.createElement("img"); char.src="assets/characters/runner.png"; char.width=100; gameArea.appendChild(char); setInterval(()=>{char.style.opacity=Math.random()>0.5?1:0.5;},1500); char.onclick=()=>{ if(char.style.opacity==1)showFeedback("win"); else showFeedback("lose"); }; }
 
-/* ----------------- HUNTINGTON'S GAMES ----------------- */
-
-// 1. Number Train
-function startSequence(){
-    gameArea.innerHTML="<h3>Number Train</h3><p>Click the numbers in order!</p>";
-    const nums=[1,2,3,4,5].sort(()=>Math.random()-0.5);
-    let expected=1;
-    nums.forEach(n=>{
-        const b=document.createElement("button"); b.innerText=n;
-        b.onclick=()=>{ if(n==expected){ expected++; if(expected>5) alert("Well done!"); }else alert("Wrong order"); };
-        gameArea.appendChild(b);
-    });
-}
-
-// 2. Red Light Green Light
-function startImpulse(){
-    gameArea.innerHTML="<h3>Red Light Green Light</h3>";
-    const circle=document.createElement("div");
-    circle.style.width="120px"; circle.style.height="120px"; circle.style.borderRadius="60px"; circle.style.margin="20px auto"; circle.style.background="green";
-    gameArea.appendChild(circle);
-    setInterval(()=>{
-        if(Math.random()>0.5){ circle.style.background="green"; circle.onclick=()=>alert("Good!"); }
-        else{ circle.style.background="red"; circle.onclick=()=>alert("Do NOT click red!"); }
-    },1500);
-}
-
-// 3. Shape Safari
-function startPattern(){
-    gameArea.innerHTML="<h3>Shape Safari</h3><p>Predict the next shape!</p>";
-    const shapes=["circle","square","circle","square"];
-    const p=document.createElement("p"); p.innerText="Pattern: circle, square, circle, square"; gameArea.appendChild(p);
-    const input=document.createElement("input"); const btn=document.createElement("button"); btn.innerText="Next shape?";
-    btn.onclick=()=>{ if(input.value=="circle") alert("Correct!"); else alert("Look for repeating patterns"); };
-    gameArea.appendChild(input); gameArea.appendChild(btn);
-}
+// Shape Safari
+function startShapeSafari(){ gameArea.innerHTML="<h3>Shape Safari</h3>"; const shapes=["circle","square","triangle","circle"]; const p=document.createElement("p"); p.innerText="Predict the next shape"; gameArea.appendChild(p); const input=document.createElement("input"); const btn=document.createElement("button"); btn.innerText="Submit"; btn.onclick=()=>{ if(input.value==="circle")showFeedback("win"); else showFeedback("lose"); }; gameArea.appendChild(input); gameArea.appendChild(btn); }
