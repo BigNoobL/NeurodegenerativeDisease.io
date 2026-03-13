@@ -1,0 +1,53 @@
+<h2>Story Recall</h2>
+
+<p id="story"></p>
+
+<button onclick="start()">New Story</button>
+
+<div id="questions"></div>
+
+<script>
+
+const stories=[
+{
+text:"John went to the grocery store to buy apples and milk.",
+q:"Where did John go?",
+a:"grocery"
+},
+{
+text:"Maria walked her dog in the park and saw a red bird.",
+q:"Where did Maria walk?",
+a:"park"
+}
+]
+
+function start(){
+
+let s=stories[Math.floor(Math.random()*stories.length)]
+
+document.getElementById("story").innerText=s.text
+
+setTimeout(()=>{
+
+document.getElementById("story").innerText=""
+
+let q=document.getElementById("questions")
+
+q.innerHTML=s.q+"<br><input id='ans'><button onclick='check(\""+s.a+"\")'>Submit</button>"
+
+},6000)
+
+}
+
+function check(a){
+
+let u=document.getElementById("ans").value.toLowerCase()
+
+if(u.includes(a))
+alert("Correct")
+else
+alert("Not quite")
+
+}
+
+</script>
